@@ -345,6 +345,13 @@ class QualityManagementApp {
                 this.loadChapter(chapterId)
             })
         })
+
+        // Event listeners para documentos recentes
+        const documentsList = document.querySelector('.documents-list')
+        if (documentsList) {
+            this.setupDocumentActionListeners(documentsList)
+            console.log('✅ Event listeners aplicados aos documentos do dashboard')
+        }
     }
 
     /**
@@ -577,23 +584,26 @@ class QualityManagementApp {
                 mainApp.style.display = 'none'
             }
             
-            // Criar visualizador integrado profissional
+            // Criar visualizador integrado profissional - LARGURA COMPLETA
             const viewer = document.createElement('div')
             viewer.id = 'document-viewer-container'
             viewer.style.cssText = `
                 position: fixed;
                 top: 0;
                 left: 0;
-                width: 100%;
-                height: 100%;
+                width: 100vw;
+                height: 100vh;
                 background: #f8f9fa;
                 z-index: 10000;
                 display: flex;
                 flex-direction: column;
                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
             `
             
-            // Header profissional como o da Vercel
+            // Header profissional como o da Vercel - LARGURA COMPLETA
             const header = document.createElement('div')
             header.style.cssText = `
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -604,6 +614,11 @@ class QualityManagementApp {
                 justify-content: space-between;
                 box-shadow: 0 4px 12px rgba(0,0,0,0.15);
                 border-bottom: 1px solid rgba(255,255,255,0.1);
+                width: 100%;
+                position: relative;
+                left: 0;
+                right: 0;
+                margin: 0;
             `
             
             header.innerHTML = `
@@ -697,27 +712,17 @@ class QualityManagementApp {
                 </div>
             `
             
-            // Área principal do visualizador
+            // Área principal do visualizador - SEM SIDEBAR
             const mainArea = document.createElement('div')
             mainArea.style.cssText = `
                 flex: 1;
                 display: flex;
                 background: white;
                 overflow: hidden;
+                width: 100%;
             `
             
-            // Sidebar com controles (como o da Vercel)
-            const sidebar = document.createElement('div')
-            sidebar.style.cssText = `
-                width: 280px;
-                background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
-                color: white;
-                padding: 24px;
-                overflow-y: auto;
-                border-right: 1px solid rgba(255,255,255,0.1);
-            `
-            
-            // Área de visualização principal
+            // Área de visualização principal - OCUPA TODA A LARGURA
             const viewerArea = document.createElement('div')
             viewerArea.style.cssText = `
                 flex: 1;
@@ -725,9 +730,10 @@ class QualityManagementApp {
                 flex-direction: column;
                 background: white;
                 overflow: hidden;
+                width: 100%;
             `
             
-            // Toolbar profissional
+            // Toolbar profissional - LARGURA COMPLETA
             const toolbar = document.createElement('div')
             toolbar.style.cssText = `
                 background: linear-gradient(90deg, #34495e 0%, #2c3e50 100%);
@@ -737,6 +743,8 @@ class QualityManagementApp {
                 align-items: center;
                 justify-content: space-between;
                 border-bottom: 1px solid rgba(255,255,255,0.1);
+                width: 100%;
+                margin: 0;
             `
             
             toolbar.innerHTML = `
@@ -806,7 +814,7 @@ class QualityManagementApp {
                 </div>
             `
             
-            // Área de conteúdo do documento com scroll correto
+            // Área de conteúdo do documento - LARGURA MÁXIMA
             const contentArea = document.createElement('div')
             contentArea.style.cssText = `
                 flex: 1;
@@ -814,8 +822,9 @@ class QualityManagementApp {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                padding: 20px;
-                overflow: hidden;
+                padding: 5px;
+                overflow: auto;
+                width: 100%;
             `
         
             // Renderizar conteúdo baseado no tipo de arquivo
@@ -847,30 +856,32 @@ class QualityManagementApp {
                                 </div>
                             `
                         } else {
-                            contentArea.innerHTML = `
-                                <div style="
-                                    background: white;
-                                    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-                                    border-radius: 12px;
-                                    overflow: hidden;
-                                    width: 100%;
-                                    height: 100%;
-                                    margin: 0 auto;
-                                    position: relative;
-                                ">
-                                    <iframe 
-                                        id="pdf-viewer"
-                                        src="${signedUrl.signedUrl}" 
-                                        style="
-                                            width: 100%; 
-                                            height: 100%; 
-                                            border: none;
-                                            border-radius: 12px;
-                                        "
-                                        title="${doc.title}">
-                                    </iframe>
-                                </div>
-                            `
+                             contentArea.innerHTML = `
+                                 <div style="
+                                     background: white;
+                                     box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+                                     border-radius: 12px;
+                                     overflow: hidden;
+                                     width: 99%;
+                                     height: 99%;
+                                     margin: 0 auto;
+                                     position: relative;
+                                 ">
+                                     <iframe 
+                                         id="pdf-viewer"
+                                         src="${signedUrl.signedUrl}" 
+                                         style="
+                                             width: 100%; 
+                                             height: 100%; 
+                                             border: none;
+                                             border-radius: 12px;
+                                             overflow: hidden;
+                                         "
+                                         scrolling="no"
+                                         title="${doc.title}">
+                                     </iframe>
+                                 </div>
+                             `
                         }
                     })
             } else if (doc.file_type === 'html') {
@@ -905,30 +916,30 @@ class QualityManagementApp {
                             fetch(signedUrl.signedUrl)
                                 .then(response => response.text())
                                 .then(htmlContent => {
-                                    contentArea.innerHTML = `
-                                        <div style="
-                                            background: white;
-                                            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-                                            border-radius: 12px;
-                                            width: 100%;
-                                            height: 100%;
-                                            margin: 0 auto;
-                                            position: relative;
-                                            overflow: hidden;
-                                        ">
-                                            <div id="html-content" style="
-                                                width: 100%;
-                                                height: 100%;
-                                                overflow-y: auto;
-                                                overflow-x: hidden;
-                                                padding: 24px;
-                                                background: #ffffff;
-                                                border-radius: 12px;
-                                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-                                                line-height: 1.6;
-                                            ">
-                                                ${htmlContent}
-                                            </div>
+                                     contentArea.innerHTML = `
+                                         <div style="
+                                             background: white;
+                                             box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+                                             border-radius: 12px;
+                                             width: 99%;
+                                             height: 99%;
+                                             margin: 0 auto;
+                                             position: relative;
+                                             overflow: hidden;
+                                         ">
+                                             <div id="html-content" style="
+                                                 width: 100%;
+                                                 height: 100%;
+                                                 overflow-y: auto;
+                                                 overflow-x: hidden;
+                                                 padding: 20px;
+                                                 background: #ffffff;
+                                                 border-radius: 12px;
+                                                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                                                 line-height: 1.6;
+                                             ">
+                                                 ${htmlContent}
+                                             </div>
                                             <div style="
                                                 position: absolute;
                                                 bottom: 16px;
@@ -949,6 +960,11 @@ class QualityManagementApp {
                                             </div>
                                         </div>
                                     `
+                                    
+                                    // Adicionar funcionalidade dinâmica aos botões HTML
+                                    setTimeout(() => {
+                                        this.addDynamicHTMLFunctionality()
+                                    }, 100)
                                 })
                                 .catch(error => {
                                     console.error('Erro ao carregar conteúdo HTML:', error)
@@ -1001,13 +1017,12 @@ class QualityManagementApp {
             `
         }
         
-        // Montar estrutura
-        viewerArea.appendChild(toolbar)
-        viewerArea.appendChild(contentArea)
-        mainArea.appendChild(sidebar)
-        mainArea.appendChild(viewerArea)
-        viewer.appendChild(header)
-        viewer.appendChild(mainArea)
+            // Montar estrutura - SEM SIDEBAR
+            viewerArea.appendChild(toolbar)
+            viewerArea.appendChild(contentArea)
+            mainArea.appendChild(viewerArea)
+            viewer.appendChild(header)
+            viewer.appendChild(mainArea)
         
         // Adicionar ao DOM
         document.body.appendChild(viewer)
@@ -1354,18 +1369,445 @@ class QualityManagementApp {
     /**
      * Cancelar edição HTML
      */
-    cancelHTMLEdit(htmlContent, toolbar) {
-        // Remover toolbar
-        if (toolbar) {
-            toolbar.remove()
+        cancelHTMLEdit(htmlContent, toolbar) {
+            // Remover toolbar
+            if (toolbar) {
+                toolbar.remove()
+            }
+            
+            // Desativar edição
+            htmlContent.contentEditable = false
+            htmlContent.style.border = '1px solid #e0e0e0'
+            htmlContent.style.background = '#fafafa'
+            
+            this.notifications.show('Edição cancelada', 'info')
         }
-        
-        // Desativar edição
-        htmlContent.contentEditable = false
-        htmlContent.style.border = '1px solid #e0e0e0'
-        htmlContent.style.background = '#fafafa'
-        
-        this.notifications.show('Edição cancelada', 'info')
+
+        /**
+         * Adicionar funcionalidade dinâmica aos botões HTML - VERSÃO AVANÇADA
+         */
+        addDynamicHTMLFunctionality() {
+            const htmlContent = document.getElementById('html-content')
+            if (!htmlContent) return
+
+            console.log('🔧 Adicionando funcionalidade dinâmica AVANÇADA aos botões HTML...')
+
+            // 1. DETECTAR TODOS OS BOTÕES DE REMOVER (X vermelhos)
+            const removeSelectors = [
+                'button[style*="background: red"]',
+                'button[style*="color: red"]', 
+                'button[style*="background-color: red"]',
+                'button[style*="background: #dc3545"]',
+                'button[style*="background: #ff0000"]',
+                '.btn-danger',
+                'button:contains("×")',
+                'button:contains("X")',
+                'button:contains("x")',
+                '[onclick*="remove"]',
+                '[onclick*="delete"]',
+                '[onclick*="eliminar"]',
+                'button[title*="eliminar"]',
+                'button[title*="remover"]',
+                'button[title*="delete"]'
+            ]
+            
+            removeSelectors.forEach(selector => {
+                try {
+                    const buttons = htmlContent.querySelectorAll(selector)
+                    buttons.forEach(button => {
+                        if (button.textContent.includes('×') || button.textContent.includes('X') || 
+                            button.textContent.includes('x') || button.style.background.includes('red') ||
+                            button.style.background.includes('#dc3545') || button.style.color.includes('red')) {
+                            
+                            button.onclick = (e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                
+                                // Encontrar a linha/container pai
+                                let row = button.closest('tr') || button.closest('.row') || 
+                                         button.closest('div') || button.closest('section') ||
+                                         button.closest('li') || button.closest('p')
+                                
+                                if (row) {
+                                    // Animação de remoção
+                                    row.style.transition = 'all 0.3s ease'
+                                    row.style.opacity = '0'
+                                    row.style.transform = 'translateX(-100%)'
+                                    
+                                    setTimeout(() => {
+                                        row.remove()
+                                        this.notifications.show('Elemento removido com sucesso!', 'success')
+                                    }, 300)
+                                }
+                            }
+                        }
+                    })
+                } catch (e) {
+                    // Ignorar seletores inválidos
+                }
+            })
+
+            // 2. DETECTAR TODOS OS BOTÕES DE ADICIONAR (verdes com +)
+            const addSelectors = [
+                'button[style*="background: green"]',
+                'button[style*="color: green"]',
+                'button[style*="background: #28a745"]',
+                'button[style*="background: #198754"]',
+                '.btn-success',
+                'button:contains("+")',
+                'button:contains("Añadir")',
+                'button:contains("Adicionar")',
+                'button:contains("Add")',
+                '[onclick*="add"]',
+                '[onclick*="añadir"]',
+                '[onclick*="adicionar"]',
+                'button[title*="añadir"]',
+                'button[title*="adicionar"]',
+                'button[title*="add"]'
+            ]
+            
+            addSelectors.forEach(selector => {
+                try {
+                    const buttons = htmlContent.querySelectorAll(selector)
+                    buttons.forEach(button => {
+                        if (button.textContent.includes('+') || button.textContent.includes('Añadir') ||
+                            button.textContent.includes('Adicionar') || button.textContent.includes('Add') ||
+                            button.style.background.includes('green') || button.style.background.includes('#28a745')) {
+                            
+                            button.onclick = (e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                
+                                // Encontrar a tabela ou container
+                                const table = button.closest('table') || button.closest('.table-container') ||
+                                            button.closest('div') || button.closest('section')
+                                
+                                if (table) {
+                                    this.addNewParameterRow(table, button)
+                                } else {
+                                    this.addNewElement(button)
+                                }
+                            }
+                        }
+                    })
+                } catch (e) {
+                    // Ignorar seletores inválidos
+                }
+            })
+
+            // 3. DETECTAR BOTÕES DE CONFORMIDADE
+            const conformidadSelectors = [
+                'button:contains("CONFORME")',
+                'button:contains("NO CONFORME")',
+                'button:contains("Conforme")',
+                'button:contains("No Conforme")',
+                '.btn-conforme',
+                '[onclick*="conformidad"]',
+                '[onclick*="conformidade"]',
+                'button[title*="conformidad"]',
+                'button[title*="conformidade"]'
+            ]
+            
+            conformidadSelectors.forEach(selector => {
+                try {
+                    const buttons = htmlContent.querySelectorAll(selector)
+                    buttons.forEach(button => {
+                        if (button.textContent.includes('CONFORME') || button.textContent.includes('Conforme')) {
+                            
+                            button.onclick = (e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                
+                                // Alternar entre CONFORME e NO CONFORME
+                                if (button.textContent.includes('CONFORME') && !button.textContent.includes('NO')) {
+                                    button.textContent = 'NO CONFORME'
+                                    button.style.background = '#dc3545'
+                                    button.style.color = 'white'
+                                    button.classList.add('no-conforme')
+                                } else {
+                                    button.textContent = 'CONFORME'
+                                    button.style.background = '#28a745'
+                                    button.style.color = 'white'
+                                    button.classList.remove('no-conforme')
+                                }
+                                
+                                this.notifications.show('Estado de conformidade alterado!', 'info')
+                            }
+                        }
+                    })
+                } catch (e) {
+                    // Ignorar seletores inválidos
+                }
+            })
+
+            // 4. DETECTAR INPUTS E CAMPOS EDITÁVEIS
+            const inputs = htmlContent.querySelectorAll('input, textarea, select')
+            inputs.forEach(input => {
+                // Adicionar estilos para indicar que é editável
+                input.style.border = '1px solid #007bff'
+                input.style.borderRadius = '4px'
+                input.style.padding = '4px 8px'
+                
+                // Adicionar funcionalidade de validação em tempo real
+                input.addEventListener('input', (e) => {
+                    const value = e.target.value
+                    const row = e.target.closest('tr') || e.target.closest('div')
+                    
+                    if (row) {
+                        // Verificar se é um campo de valor numérico
+                        if (e.target.type === 'number' || e.target.name?.includes('valor') || e.target.placeholder?.includes('valor')) {
+                            this.validateParameterValue(row, value)
+                        }
+                    }
+                })
+            })
+
+            // 5. DETECTAR E APLICAR FUNCIONALIDADE A TODOS OS BOTÕES
+            const allButtons = htmlContent.querySelectorAll('button')
+            allButtons.forEach(button => {
+                // Se o botão não tem onclick definido, adicionar funcionalidade baseada no conteúdo
+                if (!button.onclick && !button.getAttribute('onclick')) {
+                    const text = button.textContent.toLowerCase()
+                    
+                    if (text.includes('eliminar') || text.includes('remover') || text.includes('delete')) {
+                        button.onclick = (e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            this.handleGenericRemove(button)
+                        }
+                    } else if (text.includes('añadir') || text.includes('adicionar') || text.includes('add')) {
+                        button.onclick = (e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            this.handleGenericAdd(button)
+                        }
+                    } else if (text.includes('conforme') || text.includes('conformidad')) {
+                        button.onclick = (e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            this.handleConformidad(button)
+                        }
+                    }
+                }
+            })
+
+            console.log('✅ Funcionalidade dinâmica AVANÇADA adicionada aos botões HTML')
+        }
+
+        /**
+         * Adicionar nova linha de parâmetro
+         */
+        addNewParameterRow(table, button) {
+            // Encontrar o tbody ou container de linhas
+            const tbody = table.querySelector('tbody') || table.querySelector('.table-body')
+            const lastRow = tbody ? tbody.lastElementChild : table.lastElementChild
+            
+            if (lastRow) {
+                // Clonar a última linha
+                const newRow = lastRow.cloneNode(true)
+                
+                // Limpar valores da nova linha
+                const inputs = newRow.querySelectorAll('input, select, textarea')
+                inputs.forEach(input => {
+                    if (input.type === 'text' || input.type === 'number') {
+                        input.value = ''
+                    } else if (input.type === 'checkbox') {
+                        input.checked = false
+                    }
+                })
+                
+                // Atualizar botão de conformidade
+                const conformidadBtn = newRow.querySelector('button[style*="CONFORME"]')
+                if (conformidadBtn) {
+                    conformidadBtn.textContent = 'CONFORME'
+                    conformidadBtn.style.background = '#28a745'
+                    conformidadBtn.style.color = 'white'
+                }
+                
+                // Adicionar animação
+                newRow.style.opacity = '0'
+                newRow.style.transform = 'translateY(-20px)'
+                
+                if (tbody) {
+                    tbody.appendChild(newRow)
+                } else {
+                    table.appendChild(newRow)
+                }
+                
+                // Animação de entrada
+                setTimeout(() => {
+                    newRow.style.transition = 'all 0.3s ease'
+                    newRow.style.opacity = '1'
+                    newRow.style.transform = 'translateY(0)'
+                }, 10)
+                
+                // Re-aplicar funcionalidade dinâmica
+                setTimeout(() => {
+                    this.addDynamicHTMLFunctionality()
+                }, 100)
+                
+                this.notifications.show('Novo parâmetro adicionado!', 'success')
+            }
+        }
+
+        /**
+         * Adicionar novo elemento genérico
+         */
+        addNewElement(button) {
+            const container = button.parentElement
+            const newElement = document.createElement('div')
+            
+            newElement.innerHTML = `
+                <div style="
+                    background: #f8f9fa;
+                    border: 1px solid #dee2e6;
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin: 10px 0;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    animation: slideIn 0.3s ease;
+                ">
+                    <div>
+                        <strong>Novo Parâmetro</strong>
+                        <p style="margin: 5px 0; color: #6c757d;">Valor: <input type="text" placeholder="Digite o valor" style="border: 1px solid #ced4da; border-radius: 4px; padding: 4px 8px;"></p>
+                    </div>
+                    <button onclick="this.parentElement.remove()" style="
+                        background: #dc3545;
+                        color: white;
+                        border: none;
+                        padding: 8px 12px;
+                        border-radius: 4px;
+                        cursor: pointer;
+                    ">×</button>
+                </div>
+            `
+            
+            container.insertBefore(newElement, button)
+            this.notifications.show('Novo elemento adicionado!', 'success')
+        }
+
+        /**
+         * Remover elemento genérico
+         */
+        handleGenericRemove(button) {
+            const row = button.closest('tr') || button.closest('div') || button.closest('section') || button.closest('li')
+            if (row) {
+                row.style.transition = 'all 0.3s ease'
+                row.style.opacity = '0'
+                row.style.transform = 'translateX(-100%)'
+                
+                setTimeout(() => {
+                    row.remove()
+                    this.notifications.show('Elemento removido!', 'success')
+                }, 300)
+            }
+        }
+
+        /**
+         * Adicionar elemento genérico
+         */
+        handleGenericAdd(button) {
+            const container = button.closest('div') || button.closest('section') || button.closest('table')
+            if (container) {
+                this.addNewElement(button)
+            }
+        }
+
+        /**
+         * Lidar com conformidade genérica
+         */
+        handleConformidad(button) {
+            if (button.textContent.includes('CONFORME') && !button.textContent.includes('NO')) {
+                button.textContent = 'NO CONFORME'
+                button.style.background = '#dc3545'
+                button.style.color = 'white'
+            } else {
+                button.textContent = 'CONFORME'
+                button.style.background = '#28a745'
+                button.style.color = 'white'
+            }
+            this.notifications.show('Conformidade alterada!', 'info')
+        }
+
+        /**
+         * Validar valor de parâmetro em tempo real
+         */
+        validateParameterValue(row, value) {
+            const conformidadBtn = row.querySelector('button[style*="CONFORME"], button:contains("CONFORME")')
+            if (conformidadBtn && value) {
+                // Lógica simples de validação
+                const numValue = parseFloat(value)
+                if (!isNaN(numValue)) {
+                    // Aqui pode adicionar lógica específica de validação
+                    // Por exemplo, verificar se está dentro de um range
+                    conformidadBtn.textContent = 'CONFORME'
+                    conformidadBtn.style.background = '#28a745'
+                    conformidadBtn.style.color = 'white'
+                }
+            }
+        }
+
+    /**
+     * Imprimir documento da lista - DIRETO NO SITE
+     */
+    async printDocumentFromList(documentId) {
+        try {
+            console.log('🖨️ Imprimindo documento da lista:', documentId)
+            
+            const doc = await this.documents.getDocument(documentId)
+            if (!doc) {
+                throw new Error('Documento não encontrado')
+            }
+
+            // Abrir o documento no visualizador primeiro
+            await this.viewDocument(documentId)
+            
+            // Aguardar um pouco para o visualizador carregar
+            setTimeout(() => {
+                // Tentar imprimir o iframe ou conteúdo atual
+                const iframe = document.getElementById('pdf-viewer')
+                const htmlContent = document.getElementById('html-content')
+                
+                if (iframe) {
+                    // Para PDFs, imprimir o iframe
+                    iframe.contentWindow.focus()
+                    iframe.contentWindow.print()
+                } else if (htmlContent) {
+                    // Para HTML, imprimir o conteúdo
+                    const printContent = htmlContent.innerHTML
+                    const originalContent = document.body.innerHTML
+                    
+                    // Substituir temporariamente o conteúdo da página
+                    document.body.innerHTML = `
+                        <div style="
+                            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                            line-height: 1.6;
+                            color: #333;
+                            padding: 20px;
+                        ">
+                            ${printContent}
+                        </div>
+                    `
+                    
+                    // Imprimir
+                    window.print()
+                    
+                    // Restaurar conteúdo original
+                    document.body.innerHTML = originalContent
+                    
+                    // Recarregar a aplicação
+                    window.location.reload()
+                } else {
+                    this.notifications.show('Conteúdo não encontrado para impressão', 'error')
+                }
+            }, 1000)
+            
+        } catch (error) {
+            console.error('❌ Erro ao imprimir documento:', error)
+            this.notifications.show('Erro ao imprimir documento: ' + error.message, 'error')
+        }
     }
 
     /**
@@ -1503,10 +1945,23 @@ class QualityManagementApp {
                 
                 // Adicionar event listeners para ações dos documentos
                 this.setupDocumentActionListeners(documentsGrid)
+                
+                // Forçar re-renderização visual
+                documentsGrid.style.opacity = '0'
+                setTimeout(() => {
+                    documentsGrid.style.opacity = '1'
+                    documentsGrid.style.transition = 'opacity 0.3s ease'
+                }, 50)
             }
             
             // Carregar documentos dos subcapítulos
             await this.loadSubchapterDocuments(chapterId)
+            
+            // Atualizar dashboard também
+            if (this.dashboard) {
+                await this.dashboard.loadRecentDocuments()
+                this.dashboard.render()
+            }
             
             console.log(`✅ ${documents.length} documentos carregados para o capítulo ${chapterId}`)
         } catch (error) {
@@ -1537,6 +1992,13 @@ class QualityManagementApp {
                         
                         // Adicionar event listeners para ações dos documentos
                         this.setupDocumentActionListeners(subchapterContainer)
+                        
+                        // Forçar re-renderização visual
+                        subchapterContainer.style.opacity = '0'
+                        setTimeout(() => {
+                            subchapterContainer.style.opacity = '1'
+                            subchapterContainer.style.transition = 'opacity 0.3s ease'
+                        }, 50)
                     } else {
                         subchapterContainer.innerHTML = `
                             <div class="no-documents-small">
@@ -1596,9 +2058,17 @@ class QualityManagementApp {
                         console.log('📥 Baixando documento:', documentId)
                         await this.downloadDocument(documentId)
                         break
+                    case 'print':
+                        console.log('🖨️ Imprimindo documento:', documentId)
+                        await this.printDocumentFromList(documentId)
+                        break
                     case 'delete':
                         console.log('🗑️ Apagando documento:', documentId)
                         await this.deleteDocument(documentId)
+                        break
+                    case 'remove-from-list':
+                        console.log('❌ Removendo da lista:', documentId)
+                        await this.removeFromRecentList(documentId)
                         break
                 }
             } catch (error) {
@@ -1866,6 +2336,36 @@ window.downloadCurrentDocument = () => {
 
 window.closeDocumentModal = () => {
     app.closeDocumentModal()
+}
+
+// Adicionar método para remover da lista recente
+QualityManagementApp.prototype.removeFromRecentList = async function(documentId) {
+    try {
+        console.log('❌ Removendo documento da lista recente:', documentId)
+        
+        // Remover visualmente da lista
+        const documentItem = document.querySelector(`[data-document-id="${documentId}"]`)
+        if (documentItem) {
+            documentItem.style.transition = 'all 0.3s ease'
+            documentItem.style.opacity = '0'
+            documentItem.style.transform = 'translateX(-100%)'
+            
+            setTimeout(() => {
+                documentItem.remove()
+                this.notifications.show('Documento removido da lista recente', 'success')
+            }, 300)
+        }
+        
+        // Recarregar lista recente
+        if (this.dashboard) {
+            await this.dashboard.loadRecentDocuments()
+            this.dashboard.render()
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao remover da lista:', error)
+        this.notifications.show('Erro ao remover da lista: ' + error.message, 'error')
+    }
 }
 
 export default QualityManagementApp

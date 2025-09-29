@@ -23,51 +23,188 @@ export class DashboardManager {
             const recentDocuments = await this.getRecentDocuments()
             const timeline = this.getProjectTimeline()
 
-            return `
-                <div class="dashboard-layout">
-                    <div class="dashboard-header">
-                        <h1>Dashboard - Sistema de Gestión de Calidad</h1>
-                        <p>Bienvenido al portal de documentos ASCH-OHLA</p>
-                    </div>
+        return `
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                    <h1>Dashboard - Sistema de Gestión de Calidad</h1>
+                    <p>Bienvenido al portal de documentos ASCH-OHLA</p>
+                </div>
 
-                    <div class="dashboard-content">
-                        <div class="dashboard-main">
-                            <div class="dashboard-grid">
-                                ${this.renderMetricCards(stats)}
-                            </div>
-
-                            <div class="dashboard-section">
-                                <div class="section-header">
-                                    <h2>Documentos Recientes</h2>
-                                    <button class="btn btn-primary" data-action="upload">
-                                        <i class="fas fa-upload"></i>
-                                        Subir Documentos
-                                    </button>
+                <div class="dashboard-content" style="height: calc(100vh - 200px); overflow-y: auto;">
+                        <!-- Información de la Obra -->
+                        <div class="info-section">
+                            <h2>Información de la Obra</h2>
+                            <div class="info-grid">
+                                <div class="info-card">
+                                    <div class="info-icon">
+                                        <i class="fas fa-road"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <h3>Autovía A-11</h3>
+                                        <p>Tramo: Variante de Langa de Duero - Variante de Aranda de Duero</p>
+                                    </div>
                                 </div>
-                                <div class="recent-documents">
-                                    ${this.renderRecentDocuments(recentDocuments)}
+                                <div class="info-card">
+                                    <div class="info-icon">
+                                        <i class="fas fa-handshake"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <h3>UTE A11 LANGA-ARANDA</h3>
+                                        <p>Contratista: OHLA - ASCH</p>
+                                    </div>
+                                </div>
+                                <div class="info-card">
+                                    <div class="info-icon">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <h3>Estado del Proyecto</h3>
+                                        <p>En ejecución • Fase: Construcción</p>
+                                    </div>
+                                </div>
+                                <div class="info-card">
+                                    <div class="info-icon">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <h3>Responsable de Calidad</h3>
+                                        <p>José Antunes • Técnico de Calidad</p>
+                                    </div>
+                                </div>
+                                <div class="info-card">
+                                    <div class="info-icon">
+                                        <i class="fas fa-hard-hat"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <h3>Jefe de Obra</h3>
+                                        <p>Pedro Maillo • Director de Obra</p>
+                                    </div>
+                                </div>
+                                <div class="info-card">
+                                    <div class="info-icon">
+                                        <i class="fas fa-user-cog"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <h3>Gerente</h3>
+                                        <p>Isaac López Brea • Gerente de Proyecto</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="dashboard-sidebar">
-                            <div class="dashboard-section">
-                                <div class="section-header">
-                                    <h2>Cronograma del Proyecto</h2>
-                                    <span class="project-status">En Ejecución</span>
+                        <!-- Cronograma del Proyecto -->
+                        <div class="timeline-section">
+                            <h2>Cronograma del Proyecto</h2>
+                            <div class="timeline-container">
+                                <div class="timeline-dates">
+                                    <span class="timeline-start">Inicio: Feb 2023</span>
+                                    <span class="timeline-middle">marzo de 2025</span>
+                                    <span class="timeline-end">Fin: lunes, 28 de septiembre de 2026</span>
                                 </div>
-                                <div class="project-timeline">
-                                    ${this.renderTimeline(timeline)}
+                                <div class="timeline-bar">
+                                    <div class="timeline-progress" style="width: 20%"></div>
+                                </div>
+                                <div class="timeline-stats">
+                                    <span>20% completado</span>
+                                    <span>7.5 meses (26.5 meses restantes)</span>
+                                    <span>de 37 legajos (máx. 50)</span>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="dashboard-section">
-                                <div class="section-header">
-                                    <h2>Acceso Rápido a Capítulos</h2>
+                        <!-- Métricas -->
+                        <div class="metrics-section">
+                            <div class="metrics-grid">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div class="metric-value">21</div>
+                                    <div class="metric-label">Capítulos de Calidad</div>
                                 </div>
-                                <div class="quick-chapters">
-                                    ${this.renderQuickChapters()}
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-folder"></i>
+                                    </div>
+                                    <div class="metric-value">141</div>
+                                    <div class="metric-label">Subcapítulos</div>
                                 </div>
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-document"></i>
+                                    </div>
+                                    <div class="metric-value">0</div>
+                                    <div class="metric-label">Documentos Totales</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </div>
+                                    <div class="metric-value">0</div>
+                                    <div class="metric-label">Documentos Subidos</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-calendar-week"></i>
+                                    </div>
+                                    <div class="metric-value">0</div>
+                                    <div class="metric-label">Esta Semana</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="metric-value">0</div>
+                                    <div class="metric-label">Capítulos Completados</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-percentage"></i>
+                                    </div>
+                                    <div class="metric-value">0%</div>
+                                    <div class="metric-label">Tasa de Completitud</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documentos Favoritos -->
+                        <div class="documents-section">
+                            <h2>Documentos Favoritos</h2>
+                            <div class="empty-state">
+                                <i class="fas fa-star"></i>
+                                <p>No hay documentos favoritos</p>
+                                <small>Haz clic en la estrella de un documento para añadirlo a favoritos</small>
+                            </div>
+                        </div>
+
+                        <!-- Documentos Recientes -->
+                        <div class="documents-section">
+                            <h2>Documentos Vistos Recientemente</h2>
+                            <div class="empty-state">
+                                <p>No hay documentos subidos recientemente</p>
+                                <button class="btn btn-primary" data-action="upload">
+                                    <i class="fas fa-upload"></i>
+                                    Subir Documento
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Acciones Rápidas -->
+                        <div class="actions-section">
+                            <h2>Acciones Rápidas</h2>
+                            <div class="actions-grid">
+                                <button class="action-btn" data-action="view-chapter" data-chapter="1">
+                                    <i class="fas fa-folder"></i>
+                                    Ver Capítulo 01
+                                </button>
+                                <button class="action-btn" data-action="view-chapter" data-chapter="6">
+                                    <i class="fas fa-search"></i>
+                                    Ver PPI (Cap. 06)
+                                </button>
+                                <button class="action-btn" data-action="view-chapter" data-chapter="15">
+                                    <i class="fas fa-flask"></i>
+                                    Ver Laboratorio (Cap. 15)
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -274,6 +411,7 @@ export class DashboardManager {
         documents.forEach(doc => {
             const uploadDate = new Date(doc.created_at).toLocaleDateString()
             const fileSize = this.formatFileSize(doc.file_size)
+            const timeAgo = this.getTimeAgo(doc.created_at)
             
             html += `
                 <div class="document-item" data-document-id="${doc.id}">
@@ -287,13 +425,22 @@ export class DashboardManager {
                             <span><i class="fas fa-weight"></i> ${fileSize}</span>
                             <span><i class="fas fa-tag"></i> ${doc.file_type.toUpperCase()}</span>
                         </div>
+                        <div class="document-item-time">
+                            <i class="fas fa-clock"></i> ${timeAgo}
+                        </div>
                     </div>
                     <div class="document-item-actions">
-                        <button class="btn btn-sm btn-primary" data-action="view" data-document-id="${doc.id}">
+                        <button class="btn btn-sm btn-primary" data-action="view" data-document-id="${doc.id}" title="Ver documento">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-secondary" data-action="download" data-document-id="${doc.id}">
+                        <button class="btn btn-sm btn-secondary" data-action="download" data-document-id="${doc.id}" title="Descargar documento">
                             <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn btn-sm btn-info" data-action="print" data-document-id="${doc.id}" title="Imprimir documento">
+                            <i class="fas fa-print"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" data-action="remove-from-list" data-document-id="${doc.id}" title="Remover da lista">
+                            <i class="fas fa-times"></i>
                         </button>
                     </div>
                 </div>
@@ -351,11 +498,14 @@ export class DashboardManager {
      */
     renderQuickChapters() {
         const quickChapters = [
-            { id: 1, title: 'Gestión de Documentos', icon: 'fas fa-file-alt' },
-            { id: 2, title: 'Ensayos y Controles', icon: 'fas fa-flask' },
-            { id: 3, title: 'Política de Calidad', icon: 'fas fa-bullseye' },
-            { id: 4, title: 'Programación', icon: 'fas fa-calendar-alt' },
-            { id: 5, title: 'Trazabilidad', icon: 'fas fa-boxes' }
+            { id: 1, title: 'Gestión de Documentos', icon: 'fas fa-file-alt', color: '#667eea', description: 'Documentos del sistema' },
+            { id: 2, title: 'Ensayos y Controles', icon: 'fas fa-flask', color: '#f093fb', description: 'Laboratorio y pruebas' },
+            { id: 3, title: 'Política de Calidad', icon: 'fas fa-bullseye', color: '#4facfe', description: 'Normas y políticas' },
+            { id: 4, title: 'Programación', icon: 'fas fa-calendar-alt', color: '#43e97b', description: 'Cronogramas' },
+            { id: 5, title: 'Trazabilidad', icon: 'fas fa-boxes', color: '#fa709a', description: 'Seguimiento' },
+            { id: 6, title: 'Auditorías', icon: 'fas fa-search', color: '#ffecd2', description: 'Inspecciones' },
+            { id: 7, title: 'Formación', icon: 'fas fa-graduation-cap', color: '#a8edea', description: 'Capacitación' },
+            { id: 8, title: 'Mejora Continua', icon: 'fas fa-chart-line', color: '#d299c2', description: 'Optimización' }
         ]
 
         let html = '<div class="quick-chapters-grid">'
@@ -366,8 +516,14 @@ export class DashboardManager {
                     <div class="chapter-icon">
                         <i class="${chapter.icon}"></i>
                     </div>
-                    <div class="chapter-title">${chapter.title}</div>
-                    <div class="chapter-number">Capítulo ${chapter.id}</div>
+                    <div class="chapter-content">
+                        <h4 class="chapter-title">${chapter.title}</h4>
+                        <p class="chapter-description">${chapter.description}</p>
+                        <div class="chapter-number">Capítulo ${chapter.id}</div>
+                    </div>
+                    <div class="chapter-action">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
                 </div>
             `
         })
@@ -389,6 +545,24 @@ export class DashboardManager {
         const i = Math.floor(Math.log(bytes) / Math.log(k))
         
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+    }
+
+    /**
+     * Obtener tiempo transcurrido
+     * @param {string} dateString - Fecha en string
+     * @returns {string} - Tiempo transcurrido
+     */
+    getTimeAgo(dateString) {
+        const now = new Date()
+        const date = new Date(dateString)
+        const diffInSeconds = Math.floor((now - date) / 1000)
+        
+        if (diffInSeconds < 60) return 'Hace un momento'
+        if (diffInSeconds < 3600) return `Hace ${Math.floor(diffInSeconds / 60)} minutos`
+        if (diffInSeconds < 86400) return `Hace ${Math.floor(diffInSeconds / 3600)} horas`
+        if (diffInSeconds < 2592000) return `Hace ${Math.floor(diffInSeconds / 86400)} días`
+        
+        return date.toLocaleDateString()
     }
 
     /**

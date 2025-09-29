@@ -456,7 +456,9 @@ export class UploadManager {
     setupIntegratedUploadListeners() {
         // Usar arrow functions para manter o contexto
         this.handleIntegratedFileSelect = (e) => {
+            console.log('🔍 File select event triggered:', e.target)
             if (e.target.classList.contains('upload-input') || e.target.classList.contains('upload-input-small')) {
+                console.log('✅ Processing file select for:', e.target.className)
                 this.processIntegratedFileSelect(e)
             }
         }
@@ -486,9 +488,16 @@ export class UploadManager {
         }
 
         this.handleIntegratedClick = (e) => {
+            console.log('🔍 Click event triggered:', e.target)
             if (e.target.closest('.upload-zone') || e.target.closest('.upload-zone-small')) {
+                console.log('✅ Upload zone clicked')
                 const input = e.target.closest('.integrated-upload-area, .subchapter-upload').querySelector('input[type="file"]')
-                if (input) input.click()
+                if (input) {
+                    console.log('✅ File input found, clicking...')
+                    input.click()
+                } else {
+                    console.log('❌ File input not found')
+                }
             }
         }
 
@@ -665,6 +674,37 @@ export class UploadManager {
             // Recarregar documentos do capítulo atual
             if (this.currentChapter && window.app) {
                 await window.app.loadChapterDocuments(this.currentChapter)
+                
+                // También recargar subcapítulos si estamos en uno
+                if (this.currentSubchapter) {
+                    await window.app.loadSubchapterDocuments(this.currentSubchapter, window.app.supabase)
+                }
+            }
+            
+            // Actualizar dashboard también
+            if (window.app && window.app.dashboard) {
+                await window.app.dashboard.loadRecentDocuments()
+                window.app.dashboard.render()
+            }
+            
+            // Forçar re-renderização completa da interface
+            if (window.app) {
+                // Recarregar capítulo atual se estiver num capítulo
+                if (this.currentChapter) {
+                    await window.app.loadChapterDocuments(this.currentChapter)
+                }
+                
+                // Forçar atualização visual de todos os elementos
+                setTimeout(() => {
+                    const allDocumentCards = document.querySelectorAll('.document-card')
+                    allDocumentCards.forEach(card => {
+                        card.style.opacity = '0'
+                        setTimeout(() => {
+                            card.style.opacity = '1'
+                            card.style.transition = 'opacity 0.3s ease'
+                        }, 50)
+                    })
+                }, 100)
             }
         }
         if (errorCount > 0) {

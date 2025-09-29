@@ -731,6 +731,10 @@ export class ChapterManager {
                             <i class="fas fa-download"></i>
                             Baixar
                         </button>
+                        <button class="btn btn-sm btn-info" data-action="print" data-document-id="${doc.id}">
+                            <i class="fas fa-print"></i>
+                            Imprimir
+                        </button>
                         <button class="btn btn-sm btn-danger" data-action="delete" data-document-id="${doc.id}">
                             <i class="fas fa-trash"></i>
                             Apagar
