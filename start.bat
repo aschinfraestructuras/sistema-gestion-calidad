@@ -1,0 +1,9 @@
+@echo off
+echo Iniciando Sistema de Gestao de Qualidade ASCH-OHLA...
+echo.
+echo Instalando dependencias...
+call npm install
+echo.
+echo Iniciando servidor de desenvolvimento...
+call npm run dev
+pause

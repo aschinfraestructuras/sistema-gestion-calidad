@@ -1,0 +1,27 @@
+{
+  "name": "sistema-gestion-calidad",
+  "version": "1.0.0",
+  "description": "Sistema de Gestión de Calidad ASCH-OHLA - Portal de Documentos",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && vercel --prod"
+  },
+  "keywords": [
+    "calidad",
+    "documentos",
+    "supabase",
+    "construccion",
+    "asch-ohla"
+  ],
+  "author": "José Antunes",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0"
+  }
+}
